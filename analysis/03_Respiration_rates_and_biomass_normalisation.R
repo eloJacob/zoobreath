@@ -130,15 +130,6 @@ p_resp <- ggplot(
   )
 ) +
   
-  # Individual data points
-  geom_point(
-    alpha    = 0.7,
-    size     = 3,
-    shape    = 16,
-    color="black",
-    position = position_jitter(width = 0.08, seed = 42)
-  ) +
-  
   # Mean ± sd error bars
   geom_errorbar(
     data = df_summary,
@@ -164,8 +155,17 @@ p_resp <- ggplot(
   geom_point(
     data  = df_summary,
     aes(x = Pressure_char, y = median_resp),
-    shape = 17,
-    size  = 6
+    shape = 4,
+    size  = 6,
+  ) +
+  
+  # Individual data points
+  geom_point(
+    alpha    = 0.7,
+    size     = 3,
+    shape    = 16,
+    color="black",
+    position = position_jitter(width = 0.08, seed = 42)
   ) +
   
   # Kruskal-Wallis p-value
@@ -185,13 +185,13 @@ p_resp <- ggplot(
   ) +
   
   scale_y_continuous(
-    limits = c(0, NA),
+    limits = c(0, 10),
     expand = expansion(mult = c(0, 0.15))
   ) +
   
   labs(
     x = "",
-    y = expression(O[2]~consumption~"("*µmol~O[2]~mg~DW^{-1}~h^{-1}~"\u00d7"~10^{-2}*")")
+    y = expression(O[2]~consumption~"("*~10^{-2}~µmol~O[2]~mg~DW^{-1}~h^{-1}*")")
   ) +
   
   theme_classic(base_size = 13) +
