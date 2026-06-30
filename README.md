@@ -1,6 +1,6 @@
 # zoobreath
 Analysis pipeline to quantify oxygen consumption rates of Neocalanus gracilis under different hydrostatic pressure conditions (0.1, 5, 10 MPa).
-This repository contains scripts to process raw Pyroscience oxygen data, apply calibration and corrections, compute respiration rates, and generate publication-ready figures.
+This repository contains scripts to process raw Pyroscience oxygen data, apply calibration and corrections, compute respiration rates.
 
 ## Repository structure
 ├── data/
