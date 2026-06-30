@@ -62,18 +62,9 @@ all_experiments.csv
 Exploratory figures
 
 ### 3. Respiration rates calculation
-Script: 03_respiration_rates_and_biomass_normalisation.R
+Script:
 
-Calculate individual slopes using a linear model: O2 ~ Time
-Extract slope (µmol O₂ L⁻¹ h⁻¹ ind⁻¹)
-Estimate Dry weight from total length copepods using: 
-DW = 0.01841 × Length²·⁴⁵⁷(Source: Ikeda et al., 2017)
-Mass-normalised respiration rate(µmol O₂ mg DW⁻¹ h⁻¹)
-Kruskal–Wallis test across pressure treatments
 
-Output:
-respiration_rates.csv
-Final figure: respiration rate vs pressure
 
 
 ## Experimental design
