@@ -96,7 +96,7 @@ analyze_oxy <- function(data,
     if (is.null(fit_final)) next
     
     test_final <- tryCatch(
-      slope_inference(fit_final, alpha_slope, alpha_sim),
+      slope_inference(fit_final, knots_final, alpha_slope, alpha_sim),
       error = function(e) { cat("  inference failed:", e$message, "\n"); NULL })
     if (is.null(test_final)) next
     
