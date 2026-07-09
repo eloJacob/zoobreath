@@ -81,6 +81,7 @@ fit_quant_pspline <- function(x, y, df, lambda, knots = NULL) {
   ok <- is.finite(x) & is.finite(y); x0 <- x[ok]; y0 <- y[ok]
   ord <- order(x0); x0 <- x0[ord]; y0 <- y0[ord]
   xr <- range(x0); scale_x <- diff(xr)
+  n <- length(y0)
   if (scale_x <= 0) stop("x is constant or invalid.")
   xs <- (x0 - xr[1]) / scale_x
   if (!is.null(knots)) {
@@ -101,7 +102,7 @@ fit_quant_pspline <- function(x, y, df, lambda, knots = NULL) {
   D2 <- diff(diag(P), differences = 2)
   beta <- Variable(P)
   res  <- y0 - B %*% beta
-  sol  <- solve(Problem(Minimize(sum(abs(res)) + lambda * sum_squares(D2 %*% beta))),
+  sol  <- solve(Problem(Minimize(1/n*sum(abs(res)) + lambda * sum_squares(D2 %*% beta))),
                 solver = "CLARABEL", verbose = FALSE)
   if (!sol$status %in% c("optimal", "optimal_inaccurate"))
     stop(paste("CVXR solver failed:", sol$status))
