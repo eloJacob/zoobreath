@@ -2,7 +2,7 @@
 ## 03 — O2 CONSUMPTION ANALYSIS FROM TIME SERIES
 # ================================================
 # Description : Penalised LAD B-spline + asymptotic slope inference
-# Author      :  David Nerini
+# Authors      :  David Nerini, Mathilde Couteyen-Carpaye, Élodie M.A. Jacob
 # Date        : 2026
 # ================================================
 
