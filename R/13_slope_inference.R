@@ -1,18 +1,51 @@
 ## ============================================================
 ## FILE : R/slope_inference.R
-## PURPOSE : Asymptotic slope inference for penalised LAD spline
-##           using the sandwich variance formula
+## PURPOSE : Slope inference for penalised LAD spline
+##           with bootstrap
 ## AUTHOR : D. Nerini — June 2026
 ## ============================================================
+
+compute_contrast_matrix <- function(fit){
+  br <- sort(unique(c(min(fit$x_used), fit$knots, max(fit$x_used))))
+  nseg <- length(br) - 1
+  beta <- fit$beta
+  P <- length(beta)
+  
+  # Basis derivative matrix L: each row j gives dB/dx evaluated
+  # at the centre of segment j (linear B-spline, so constant on
+  # each interval; we approximate using the two endpoint values)
+  L <- matrix(NA, nseg, P)
+  for (j in seq_len(nseg)) {
+    Bz <- basis_at(fit, c(br[j], br[j + 1]))
+    L[j, ] <- (Bz[2, ] - Bz[1, ]) / (br[j + 1] - br[j])
+  }
+  return(list(br = br, L = L))
+}
+
+create_bootstrap_replicate <- function(fit){
+  new_data <- data.frame(x = fit$x_used)
+  residuals <- fit$y_used - fit$fitted
+  residuals <- residuals - median(residuals)
+  new_data$y <- fit$fitted + sample(residuals, length(fit$fitted), replace = TRUE)
+  return(new_data)
+}
+
+compute_V_bootstrap <- function(fit, knots_final, n_boot = 500){
+  coefs_boot <- matrix(nrow = n_boot, ncol = length(fit$beta))
+  
+  for(i in 1:n_boot){
+    data_boot <- create_bootstrap_replicate(fit)
+    boot_fit <- fit_quant_pspline(data_boot$x, data_boot$y, ncol(fit$B), fit$lambda, knots = knots_final)
+    coefs_boot[i, ] <- boot_fit$beta
+  }
+  
+  return(coefs_boot)
+}
 
 ## ---- slope_inference ----
 #' Compute asymptotic slope estimates and inference for each
 #' knot-delimited segment of a fitted penalised LAD B-spline.
 #'
-#' Uses the sandwich variance formula:
-#'   V(beta) = A^{-1} * B * A^{-1}
-#' where A = 2*f(0)*B'B + 2*lambda*D2'D2
-#' and B = (1/4)*B'B (LAD dispersion matrix).
 #' Segment slopes and their variance are derived via the basis
 #' derivative matrix L.
 #'
@@ -34,31 +67,22 @@
 #'   - z_sim        : pairwise z-statistics for slope similarity
 #'   - similar      : logical matrix; similar[i,j] = TRUE if
 #'                    slopes i and j are not significantly different
-slope_inference <- function(fit, alpha_slope = 0.05, alpha_sim = 0.1) {
-  br <- sort(unique(c(min(fit$x_used), fit$knots, max(fit$x_used))))
+slope_inference <- function(fit, knots_final, alpha_slope = 0.05, alpha_sim = 0.1) {
+  contrast_mat <- compute_contrast_matrix(fit)
+  br <- contrast_mat$br
   nseg <- length(br) - 1
-  B <- fit$B; beta <- fit$beta; D2 <- fit$D2; lambda <- fit$lambda; P <- length(beta)
-
-  # Basis derivative matrix L: each row j gives dB/dx evaluated
-  # at the centre of segment j (linear B-spline, so constant on
-  # each interval; we approximate using the two endpoint values)
-  L <- matrix(NA, nseg, P)
-  for (j in seq_len(nseg)) {
-    Bz <- basis_at(fit, c(br[j], br[j + 1]))
-    L[j, ] <- (Bz[2, ] - Bz[1, ]) / (br[j + 1] - br[j])
-  }
-  slopes <- drop(L %*% beta)
-
-  # Residuals for density estimation at zero (LAD density f(0))
-  resid <- fit$y_used - fit$fitted
-  f0 <- approx(density(resid)$x, density(resid)$y, xout = 0, rule = 2)$y
-  if (!is.finite(f0) || f0 <= 0) f0 <- 1 / (2 * mad(resid))
-
-  # Sandwich variance: A = 2*f(0)*B'B + 2*lambda*D2'D2
-  A <- 2 * f0 * crossprod(B) + 2 * lambda * crossprod(D2)
-  Vbeta <- solve(A, 0.25 * crossprod(B)) %*% solve(A)
-  Vslopes <- L %*% Vbeta %*% t(L)
-  se <- sqrt(diag(Vslopes)); zval <- slopes / se; p_two <- 2 * pnorm(-abs(zval))
+  L <- contrast_mat$L
+  
+  slopes <- drop(L %*% fit$beta)
+  coefs_boot <- compute_V_bootstrap(fit, knots_final)
+  
+  Vbeta <- cov(coefs_boot)
+  
+  Vslopes<- L %*% Vbeta %*% t(L)
+  
+  se <- sqrt(diag(Vslopes))
+  zval <- slopes / se
+  p_two <- 2 * pnorm(-abs(zval))
 
   slope_table <- data.frame(
     segment   = seq_len(nseg),
@@ -83,12 +107,12 @@ slope_inference <- function(fit, alpha_slope = 0.05, alpha_sim = 0.1) {
   }
   diag(p_sim) <- 1
 
-  list(breaks    = br,
+  return(list(breaks    = br,
        slope_table = slope_table,
        L          = L,
        Vbeta      = Vbeta,
        Vslopes    = Vslopes,
        p_sim      = p_sim,
        z_sim      = z_sim,
-       similar    = p_sim > alpha_sim)
+       similar    = p_sim > alpha_sim))
 }

@@ -57,7 +57,7 @@ source("R/17_make_publication_plots.R")
 OUTPUT_DIR   <- "oxy_results"  # output directory for PDFs and CSV
 
 DF           <- 40             # degrees of freedom for initial B-spline basis
-LAMBDA       <- 3              # roughness penalty weight
+LAMBDA       <- 0.008              # roughness penalty weight
 ALPHA_SLOPE  <- 0.05           # significance level for slope classification
 ALPHA_SIM    <- 0.4            # similarity threshold for segment merging
 MIN_N        <- 20             # minimum points required per segment

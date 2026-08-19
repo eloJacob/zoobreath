@@ -31,7 +31,7 @@ merge_segments <- function(x, y, br0, df, lambda, alpha_slope, alpha_sim, min_n)
                         error = function(e) NULL)
     if (is.null(fit_c)) break
 
-    test_c <- tryCatch(slope_inference(fit_c, alpha_slope, alpha_sim),
+    test_c <- tryCatch(slope_inference(fit_c, knots_c, alpha_slope, alpha_sim),
                        error = function(e) NULL)
     if (is.null(test_c)) break
 
