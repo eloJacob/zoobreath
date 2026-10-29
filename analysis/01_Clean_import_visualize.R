@@ -13,6 +13,7 @@ library(ggplot2)
 library(stringr)
 library(patchwork)
 library(presens)
+library(chron)
 
 source("R/01_time_vector.R")
 source("R/02_clean_pyroscience_data.R")

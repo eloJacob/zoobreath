@@ -2,7 +2,7 @@
 ## 03 — O2 CONSUMPTION ANALYSIS FROM TIME SERIES
 # ================================================
 # Description : Penalised LAD B-spline + asymptotic slope inference
-# Authors      :  David Nerini, Mathilde Couteyen-Carpaye, Élodie M.A. Jacob
+# Authors      :  David Nerini, Mathilde Couteyen Carpaye, Élodie M.A. Jacob
 # Date        : 2026
 # ================================================
 
@@ -43,12 +43,12 @@
 # ------------------------------------------------------------
 
 # Load all helper functions
-source("R/12_utils_spline.R")
-source("R/13_slope_inference.R")
-source("R/14_merge_segments.R")
-source("R/15_select_o2_segments.R")
-source("R/16_analyze_oxy.R")
-source("R/17_make_publication_plots.R")
+source("R/11_utils_spline.R")
+source("R/12_slope_inference.R")
+source("R/13_merge_segments.R")
+source("R/14_select_o2_segments.R")
+source("R/15_analyze_oxy.R")
+source("R/16_make_publication_plots.R")
 
 # ------------------------------------------------------------
 # 1. PARAMETERS
@@ -123,13 +123,13 @@ length_data$DW_mg <- ALLO_A * (length_data[["Length..mm."]])^ALLO_B
 
 CHAMBER_VOL_L <- CHAMBER_VOL_mL / 1000   # 5 mL → 0.005 L
 
-# Utiliser un nom distinct pour le tableau résumé
+
 zoo_summary <- dplyr::left_join(out$summary_table, length_data, by = c("id" = "ID"))
 
-# Calcul
+
 zoo_summary$Resp_umol_mgDW_h <- (zoo_summary$conso_O2 * CHAMBER_VOL_L) / zoo_summary$DW_mg
 
-# Aperçu
+# Preview
 zoo_summary[, c("id", "conso_O2", "DW_mg", "Resp_umol_mgDW_h")]
 
 # ------------------------------------------------------------
