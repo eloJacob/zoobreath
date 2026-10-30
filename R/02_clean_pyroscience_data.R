@@ -10,7 +10,7 @@
 #'
 Clean.pyroscience.data=function(data,unit,salinity=38, dphi=F){
   require(marelac)
-  #press en pression lors de la mesure dbar 
+  #press: pressure in dbar 
   #unit = "%airsat" or "umol.l"  
   #For old software
   if(str_detect(names(data)[1],"X")==T){
