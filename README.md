@@ -23,17 +23,17 @@ This repository contains scripts to process raw Pyroscience oxygen data, apply c
 │   ├── 08_df_to_long.R
 │   ├── 09_plot_experiment.R
 │   ├── 10_assemble_experiment.R
-│   ├── 12_utils_spline.R
-│   ├── 13_slope_inference.R
-│   ├── 14_merge_segments.R
-│   ├── 15_select_o2_segments.R
-│   ├── 16_analyze_oxy.R
-│   └── 17_make_publication_plots.R
+│   ├── 11_utils_spline.R
+│   ├── 12_slope_inference.R
+│   ├── 13_merge_segments.R
+│   ├── 14_select_o2_segments.R
+│   ├── 15_analyze_oxy.R
+│   └── 16_make_publication_plots.R
 │
 ├── analysis/
 │   ├── 01_Clean_importe_visualize.R
 │   ├── 02_Merge_and_explore_oxygen_time_series.R
-│   ├── 03_respiration_rates_and_biomass_normalisation.R
+│   ├── 03_oxy_consumption_analysis.R
 │   └── README.md
 
 ## Workflow overview
@@ -67,7 +67,7 @@ all_experiments.csv
 Exploratory figures
 
 ### 3. Respiration rates calculation
-Script: 03_respiration_rates_and_biomass_normalisation.R
+Script: 03_oxy_consumption_analysis.R
 
 This script estimates oxygen consumption rates from respirometry time series 
 using a **robust penalised spline segmentation approach**, rather than a single 
@@ -161,6 +161,7 @@ patchwork
 stringr
 presens
 rstatix
+chron
 
 
 ## Notes
@@ -169,5 +170,5 @@ Some channels are excluded due to artefacts or mortality
 
 ## Authors
 Élodie M.A. Jacob
-Mathilde Couteyen-Carpaye
+Mathilde Couteyen Carpaye
 2026
